@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-02 14:03:29
- * @LastEditTime: 2020-11-10 21:45:50
+ * @LastEditTime: 2020-11-19 18:52:36
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -69,16 +69,29 @@ void MyBotDrive::velodyneMsgCallBack(
       new pcl::PointCloud<pcl::PointXYZ>());
   pcl::fromROSMsg(*msgPtr, *cloud);
   int32_t pointsSize = cloud->points.size();
+
+  // PCL滤波
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered(
+      new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PassThrough<pcl::PointXYZ> pass;
+  pass.setInputCloud(cloud);
+  pass.setFilterFieldName("x");
+  pass.setFilterFieldName("y");
+  pass.setFilterLimits(0.0, 1.0);
+  pass.filter(*cloud_filtered);
+  double minBlockDis = 10.0;
   for (size_t i = 0; i < pointsSize; i++) {
-    ROS_INFO("Cloud (%f,%f,%f)", cloud->points[i].x, cloud->points[i].y,
-             cloud->points[i].z);
+    double blockDis = sqrt(cloud->points[i].x * cloud->points[i].x +
+                           cloud->points[i].y * cloud->points[i].y);
+    // ROS_INFO("与障碍物距离:%d", blockDis);
+    if (minBlockDis > blockDis) minBlockDis = blockDis;
   }
+  ROS_INFO("Distance from the block is %fm", minBlockDis);
 }
 void MyBotDrive::updatecommandVelocity(double linear, double angular) {
   geometry_msgs::Twist cmd_vel;
   cmd_vel.linear.x = linear;
   cmd_vel.angular.z = angular;
-
   cmd_vel_pub_.publish(cmd_vel);
 }
 

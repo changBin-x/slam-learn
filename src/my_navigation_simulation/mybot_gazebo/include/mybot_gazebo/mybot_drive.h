@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-01 23:03:30
- * @LastEditTime: 2020-11-18 10:59:19
+ * @LastEditTime: 2020-11-19 17:11:36
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -22,6 +22,8 @@
 #include "ros/ros.h"
 // #include "sensor_msgs/LaserScan.h"
 #include "pcl/features/normal_3d.h"
+#include "pcl/filters/passthrough.h"
+#include "pcl/point_types.h"
 #include "sensor_msgs/PointCloud2.h"
 //#include "velodyne_gazebo_plugins/GazeboRosVelodyneLaser.h"
 
