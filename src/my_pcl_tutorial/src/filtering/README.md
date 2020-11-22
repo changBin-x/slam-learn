@@ -13,6 +13,7 @@
 <div align="center">
 
 <img src=https://pcl.readthedocs.io/projects/tutorials/en/latest/_images/passthrough_2.png>
+</div>
 
 注意，坐标轴表示为红色（x），绿色（y）和蓝色（z）。 用绿色过滤后剩余的点，用红色表示已被过滤器删除的点。
 
@@ -27,6 +28,49 @@
 运行结果
 
 <div align="center">
-<img src="../../data/imgs/table_scene_lms400.png">
-<img src="../../data/imgs/table_scene_lms400_downsampled.png">
+<img src="../../imgs/table_scene_lms400.png">
+<img src="../../imgs/table_scene_lms400_downsampled.png">
 </div>
+
+
+
+## 3. 使用StatisticsOutlierRemoval(统计离群值移除)过滤器删除离群值
+
+在本教程中，我们将学习如何删除噪声测量，例如 使用统计分析技术从点云数据集中获取离群值。
+
+### 背景知识
+
+激光扫描通常会生成不同点密度的点云数据集。此外，测量误差会导致稀疏的异常值，从而进一步破坏结果的准确性。这会使局部点云特征（例如表面法线或曲率变化）的估计复杂化，从而导致错误的值，进而可能导致点云配准失败。通过对每个点的邻域进行统计分析，并修剪不符合特定条件的部分，可以解决其中的一些不规则现象。我们的稀疏离群值消除基于输入数据集中点到邻居距离的分布的计算。 对于每个点，我们计算从它到所有相邻点的平均距离。通过假设结果分布是具有均值和标准差的高斯分布，可以将其平均距离在由全局距离均值和标准差定义的区间之外的所有点视为离群值并从数据集中进行修剪。
+
+下图显示了稀疏离群值分析和删除的效果：原始数据集显示在左侧，而结果数据集显示在右侧。 该图显示了滤波前后点附近的平均k最近邻距离。
+
+<img src=https://pcl.readthedocs.io/projects/tutorials/en/latest/_images/statistical_removal_2.jpg>
+
+[代码](./statistical_removal.cc)
+
+
+运行结果
+
+<div align="center">
+<img src="../../imgs/table_scene_lms400.png">
+<img src="../../imgs/filtered_inliers_cloud.png">
+</div>
+
+## 4. 使用参数模型投影点
+
+在本教程中，我们将学习如何将点投影到参数模型（例如，平面，球体等）上。 参数模型通过一组系数给出-在平面情况下，通过其方程式：ax + by + cz + d = 0。
+
+[代码](./project_inliers.cc)
+
+运行结果,立体物体被投影到X-Y平面上
+
+<div align="center">
+<img src="../../imgs/table_scene_lms400.png">
+<img src="../../imgs/projectInliers_cloud.png">
+</div>
+
+## 5. 从点云数据提取索引并提取点云的子集
+
+在本教程中，我们将学习如何使用：pcl:[`ExtractIndices <pcl::ExtractIndices>`](https://pcl.readthedocs.io/projects/tutorials/en/latest/extract_indices.html#id1)过滤器基于分段算法输出的索引从点云中提取点的子集。 为了不使教程复杂，此处不解释分段算法。 请查看[“平面模型细分”](https://pcl.readthedocs.io/projects/tutorials/en/latest/planar_segmentation.html#planar-segmentation)教程以了解更多信息。
+
+[代码](./extract_indices.cc)

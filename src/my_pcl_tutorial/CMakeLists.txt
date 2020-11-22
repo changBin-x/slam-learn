@@ -149,7 +149,11 @@ add_definitions(${PCL_DEFINITIONS})
 # add_executable(${PROJECT_NAME} src/example.cc)
 # add_executable(${PROJECT_NAME} src/matrix_transform.cc)
 # add_executable(${PROJECT_NAME} src/features.cc)
-add_executable(${PROJECT_NAME} src/filtering/passThroughFilter.cc)
+# add_executable(${PROJECT_NAME} src/filtering/passThroughFilter.cc)
+# add_executable(${PROJECT_NAME} src/filtering/voxel_grid.cc)
+# add_executable(${PROJECT_NAME} src/filtering/statistical_removal.cc)
+# add_executable(${PROJECT_NAME} src/filtering/project_inliers.cc)
+add_executable(${PROJECT_NAME} src/filtering/extract_indices.cc)
 
 
 ## Rename C++ executable without prefix
