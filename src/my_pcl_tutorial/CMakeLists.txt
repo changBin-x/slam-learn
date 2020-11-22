@@ -148,7 +148,8 @@ add_definitions(${PCL_DEFINITIONS})
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME} src/example.cc)
 # add_executable(${PROJECT_NAME} src/matrix_transform.cc)
-add_executable(${PROJECT_NAME} src/features.cc)
+# add_executable(${PROJECT_NAME} src/features.cc)
+add_executable(${PROJECT_NAME} src/filtering/passThroughFilter.cc)
 
 
 ## Rename C++ executable without prefix
