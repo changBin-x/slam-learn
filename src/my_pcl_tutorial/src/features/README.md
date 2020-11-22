@@ -21,7 +21,7 @@
 * 噪声-在数据中存在轻微噪声的情况下，点要素表示必须在其特征向量中保留相同或非常相似的值。
 
 <div align="center">
-<img src="./imgs/good_features.jpg">
+<img src="../../imgs/good_features.jpg">
 </div>
 
 通常，PCL功能使用近似的方法通过快速的kd树查询来计算查询点的最近邻居。 我们感兴趣的查询有两种：
@@ -53,7 +53,7 @@ Note:
 由于始终需要setInputCloud（），因此最多可以使用\<setInputCloud（），setIndices（），setSearchSurface（）\>创建四个组合。 假设我们有两个点云，P = {p_1，p_2，…p_n}和Q = {q_1，q_2，…，q_n}。 下图显示了所有四种情况：
 
 <div align="center">
-<img src="./imgs/features_input_explained.png">
+<img src="../../imgs/features_input_explained.png">
 </div>
 
 * setIndices（）=false，setSearchSurface（）=false-毫无疑问，这是PCL中最常用的情况，用户仅输入单个PointCloud数据集，并期望在云中的所有点处估计某个特征。
