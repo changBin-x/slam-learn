@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-01 23:03:30
- * @LastEditTime: 2020-11-22 12:22:08
+ * @LastEditTime: 2020-11-26 11:10:24
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -73,6 +73,8 @@ class MyBotDrive {
   void velodyneMsgCallBack(const sensor_msgs::PointCloud2ConstPtr& msgPtr);
   void tempPointsCallBack(const sensor_msgs::PointCloud2ConstPtr& msgPtr);
   void odomMsgCallBack(const nav_msgs::Odometry::ConstPtr& OdomMsg);
+  pcl::PointCloud<pcl::PointXYZ>::Ptr pcl_cloud_filtered(
+      const pcl::PointCloud<pcl::PointXYZ>::Ptr& sourceCloud);
 };
 
 #endif  // MYBOT_DRIVE_H_

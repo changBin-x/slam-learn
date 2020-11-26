@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-02 14:03:29
- * @LastEditTime: 2020-11-22 12:25:46
+ * @LastEditTime: 2020-11-26 11:49:35
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -72,35 +72,72 @@ void MyBotDrive::odomMsgCallBack(const nav_msgs::Odometry::ConstPtr &OdomMsg) {
   // ROS_INFO("Yaw:%f", bot_pose_);
 }
 
+/**
+ * @brief 点云滤波操作
+ * @param
+ * @return
+ */
+pcl::PointCloud<pcl::PointXYZ>::Ptr MyBotDrive::pcl_cloud_filtered(
+    const pcl::PointCloud<pcl::PointXYZ>::Ptr &sourceCloud) {
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloudFilter(
+      new pcl::PointCloud<pcl::PointXYZ>());
+
+  // 条件滤波
+  // pcl::ConditionAnd<pcl::PointXYZ>::Ptr rangeCloud(
+  //     new pcl::ConditionAnd<pcl::PointXYZ>);
+  // //设置点云作用域为z,取大于0.08且小于0.8的位置，保留在点云中，其余进行移除
+  // pcl::FieldComparison<pcl::PointXYZ>::ConstPtr comparisonOpsGT(
+  //     new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::GT,
+  //                                             0.140));
+  // pcl::FieldComparison<pcl::PointXYZ>::ConstPtr ComparisonOpsLT(
+  //     new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::LT,
+  //                                             3.0));
+  // rangeCloud->addComparison(comparisonOpsGT);
+  // rangeCloud->addComparison(ComparisonOpsLT);
+  // pcl::ConditionalRemoval<pcl::PointXYZ> cloud_after_rmv;
+  // cloud_after_rmv.setCondition(rangeCloud);
+  // cloud_after_rmv.setInputCloud(sourceCloud);
+  // cloud_after_rmv.setKeepOrganized(true);
+  // cloud_after_rmv.filter(*cloudFilter);
+
+  //直通滤波
+  pcl::PassThrough<pcl::PointXYZ> pass;
+  pass.setInputCloud(sourceCloud);  //设置输入点云
+  pass.setFilterFieldName("x");  //设置过滤时所需要点云类型的Z字段
+  pass.setFilterLimits(0.140, 3.0);  //设置在过滤字段的范围
+  pass.filter(*cloudFilter);
+
+  pass.setInputCloud(cloudFilter);
+  pass.setFilterFieldName("y");
+  pass.setFilterLimits(-3.0, 3.0);  //设置在过滤字段的范围
+  pass.filter(*cloudFilter);
+
+  pass.setInputCloud(cloudFilter);
+  pass.setFilterFieldName("z");
+  pass.setFilterLimits(0.143, 3);
+  pass.filter(*cloudFilter);
+
+  int32_t pointsSize = cloudFilter->points.size();
+  std::cout << "cloud after filtering :" << std::endl;
+  for (size_t i = 0; i < pointsSize; i++) {
+    ROS_INFO("%.6f  %.6f  %.6f", cloudFilter->points[i].x,
+             cloudFilter->points[i].y, cloudFilter->points[i].z);
+  }
+
+  return cloudFilter;
+}
+
 void MyBotDrive::velodyneMsgCallBack(
     const sensor_msgs::PointCloud2ConstPtr &msgPtr) {
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(
       new pcl::PointCloud<pcl::PointXYZ>());
+
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudFilter(
       new pcl::PointCloud<pcl::PointXYZ>());
+
   pcl::fromROSMsg(*msgPtr, *cloud);
 
-  // 剪除点云
-
-  pcl::ConditionAnd<pcl::PointXYZ>::Ptr rangeCloud(
-      new pcl::ConditionAnd<pcl::PointXYZ>);
-  //设置点云作用域为z,取大于0.08且小于0.8的位置，保留在点云中，其余进行移除
-  pcl::FieldComparison<pcl::PointXYZ>::ConstPtr comparisonOpsGT(
-      new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::GT,
-                                              0.008));
-  pcl::FieldComparison<pcl::PointXYZ>::ConstPtr ComparisonOpsLT(
-      new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::LT,
-                                              0.8));
-  rangeCloud->addComparison(comparisonOpsGT);
-  rangeCloud->addComparison(ComparisonOpsLT);
-  pcl::ConditionalRemoval<pcl::PointXYZ> cloud_after_rmv;
-  cloud_after_rmv.setCondition(rangeCloud);
-  cloud_after_rmv.setInputCloud(cloud);
-  cloud_after_rmv.setKeepOrganized(true);
-  cloud_after_rmv.filter(*cloudFilter);
-
-  sensor_msgs::PointCloud2 filterCloudMsg;
-  pcl::toROSMsg(*cloudFilter, filterCloudMsg);
+  cloudFilter = pcl_cloud_filtered(cloud);
 
   int32_t pointsSize = cloudFilter->points.size();
 
@@ -115,9 +152,12 @@ void MyBotDrive::velodyneMsgCallBack(
       yMin = abs(cloudFilter->points[i].y);
     }
   }
-  ROS_INFO("[xMin:%f,yMin:%f]", xMin, yMin);
+  // ROS_INFO("[xMin:%f,yMin:%f]", xMin, yMin);
   sacn_velodyne_[0] = xMin;
   sacn_velodyne_[1] = yMin;
+
+  sensor_msgs::PointCloud2 filterCloudMsg;
+  pcl::toROSMsg(*cloudFilter, filterCloudMsg);
 
   temp_points_pub_.publish(filterCloudMsg);
 }
