@@ -1,0 +1,82 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "ROS:catkin_make",
+			"type": "shell",
+			"command": "catkin_make",
+			"args": [
+				"--pkg",
+				"mybot_gazebo",
+				"-DCMAKE_BUILD_TYPE=Debug"
+			],
+			"problemMatcher": [
+				"$catkin-gcc",
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"options": {
+				"cwd": "${workspaceRoot}"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": true
+			},
+			// "dependsOn": [
+			// 	"ROS:Start Core"
+			// ]
+		},
+		{
+			"label": "ROS:Stop Core",
+			"type": "process",
+			"command": "killall -9 roscore && killall -9 rosmaster",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "ROS:Start Core",
+			"type": "process",
+			"command": "roscore",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			}
+		},
+		{
+			"label": "ROS:Start Node",
+			"type": "shell",
+			"command": "${workspaceFolder}/devel/lib/my_pcl_tutorial/my_pcl_tutorial",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "silent",
+				"focus": false,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"clear": false
+			},
+			"dependsOn": [
+				"ROS:catkin_make"
+			]
+		}
+	]
+}
