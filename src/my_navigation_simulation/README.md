@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-26 17:24:08
+ * @LastEditTime: 2020-11-26 17:36:55
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -38,6 +38,12 @@
 
 运行简单避障的例子的命令:
 roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_avoidance.launch)
+
+[运行结果示例](images/obstacle_avoidance.gif)
+
+<div align="center">
+<img src="images/obstacle_avoidance.gif">
+</div>
 
 ## 存在的问题
 
