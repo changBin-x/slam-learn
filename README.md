@@ -6,4 +6,4 @@
 
 ## 雷达点云导航
 
-[my_navigation_simulation](./build/my_navigation_simulation/README.md)
+[my_navigation_simulation](src/my_navigation_simulation/README.md)
