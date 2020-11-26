@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-22 17:57:45
- * @LastEditTime: 2020-11-22 19:46:19
+ * @LastEditTime: 2020-11-26 10:47:10
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -40,7 +40,7 @@ int main(int argc, char** argv) {
   //读取点云数据
   if (pcl::io::loadPCDFile<pcl::PointXYZ>(
           "/home/chang/catkin_ws/src/my_pcl_tutorial/data/"
-          "table_scene_lms400.pcd",
+          "2.pcd",
           *cloud) < 0) {
     PCL_ERROR("load pcdFile failed");
     return -1;

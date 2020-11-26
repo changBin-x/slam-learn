@@ -154,8 +154,8 @@ add_definitions(${PCL_DEFINITIONS})
 # add_executable(${PROJECT_NAME} src/filtering/statistical_removal.cc)
 # add_executable(${PROJECT_NAME} src/filtering/project_inliers.cc)
 # add_executable(${PROJECT_NAME} src/filtering/extract_indices.cc)
-add_executable(${PROJECT_NAME} src/keypoints/narf_keypoint_extraction.cpp)
-
+# add_executable(${PROJECT_NAME} src/keypoints/narf_keypoint_extraction.cpp)
+add_executable(${PROJECT_NAME} src/filtering/remove_outliers.cc)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
