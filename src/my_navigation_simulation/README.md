@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-26 17:01:30
+ * @LastEditTime: 2020-11-26 17:11:38
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -28,4 +28,5 @@
 
 [代码](mybot_gazebo/src/mybot_drive.cc)
 
-运行简单避障的例子:[roslaunch mybot_gazebo obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_avoidance.launch)
+运行简单避障的例子的命令:
+roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_avoidance.launch)
