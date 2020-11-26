@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-22 12:46:43
+ * @LastEditTime: 2020-11-26 17:01:30
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -25,3 +25,7 @@
    2. 把sensor_msgs::PointCloud2ConstPtr转换为pcl::PointCloud<pcl::PointXYZ>
 2. 剪除部分点云
 3. 根据保留的点云的x，y数据判断小车的行驶方向
+
+[代码](mybot_gazebo/src/mybot_drive.cc)
+
+运行简单避障的例子:[roslaunch mybot_gazebo obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_avoidance.launch)

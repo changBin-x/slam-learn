@@ -1,10 +1,10 @@
 /*
  * @Date: 2020-11-02 14:03:29
- * @LastEditTime: 2020-11-26 11:49:35
+ * @LastEditTime: 2020-11-26 16:59:55
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
- * @Description:
+ * @Description:实现小车的简单避障
  */
 #include "mybot_gazebo/mybot_drive.h"
 MyBotDrive::MyBotDrive() : nh_priv_("~") {
@@ -31,7 +31,7 @@ bool MyBotDrive::init() {
       nh_.param<std::string>("cmd_vel_topicName", "");
 
   //初始化变量
-  escape_range_ = 0.03;
+  escape_range_ = 0.8;
   check_forward_dist_ = 0.7;
   check_side_dist_ = 0.6;
 
@@ -46,9 +46,7 @@ bool MyBotDrive::init() {
   //初始化订阅者
   velodyne_scan_sub_ = nh_.subscribe("/velodyne_points", 1,
                                      &MyBotDrive::velodyneMsgCallBack, this);
-  // velodyne_scan_sub_ =
-  //     nh_.subscribe("/temp_points", 1, &MyBotDrive::tempPointsCallBack,
-  //     this);
+
   odom_sub_ = nh_.subscribe("odom", 10, &MyBotDrive::odomMsgCallBack, this);
 
   return true;
@@ -82,24 +80,6 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr MyBotDrive::pcl_cloud_filtered(
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloudFilter(
       new pcl::PointCloud<pcl::PointXYZ>());
 
-  // 条件滤波
-  // pcl::ConditionAnd<pcl::PointXYZ>::Ptr rangeCloud(
-  //     new pcl::ConditionAnd<pcl::PointXYZ>);
-  // //设置点云作用域为z,取大于0.08且小于0.8的位置，保留在点云中，其余进行移除
-  // pcl::FieldComparison<pcl::PointXYZ>::ConstPtr comparisonOpsGT(
-  //     new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::GT,
-  //                                             0.140));
-  // pcl::FieldComparison<pcl::PointXYZ>::ConstPtr ComparisonOpsLT(
-  //     new pcl::FieldComparison<pcl::PointXYZ>("z", pcl::ComparisonOps::LT,
-  //                                             3.0));
-  // rangeCloud->addComparison(comparisonOpsGT);
-  // rangeCloud->addComparison(ComparisonOpsLT);
-  // pcl::ConditionalRemoval<pcl::PointXYZ> cloud_after_rmv;
-  // cloud_after_rmv.setCondition(rangeCloud);
-  // cloud_after_rmv.setInputCloud(sourceCloud);
-  // cloud_after_rmv.setKeepOrganized(true);
-  // cloud_after_rmv.filter(*cloudFilter);
-
   //直通滤波
   pcl::PassThrough<pcl::PointXYZ> pass;
   pass.setInputCloud(sourceCloud);  //设置输入点云
@@ -118,11 +98,6 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr MyBotDrive::pcl_cloud_filtered(
   pass.filter(*cloudFilter);
 
   int32_t pointsSize = cloudFilter->points.size();
-  std::cout << "cloud after filtering :" << std::endl;
-  for (size_t i = 0; i < pointsSize; i++) {
-    ROS_INFO("%.6f  %.6f  %.6f", cloudFilter->points[i].x,
-             cloudFilter->points[i].y, cloudFilter->points[i].z);
-  }
 
   return cloudFilter;
 }
@@ -141,20 +116,19 @@ void MyBotDrive::velodyneMsgCallBack(
 
   int32_t pointsSize = cloudFilter->points.size();
 
-  double xMin = 200.0;
-  double yMin = 200.0;
+  double xMin = 5.0;
+  double y_xMin = 0.0;
 
   for (size_t i = 0; i < pointsSize; i++) {
-    if (xMin > abs(cloudFilter->points[i].x)) {
-      xMin = abs(cloudFilter->points[i].x);
-    }
-    if (yMin > abs(cloudFilter->points[i].y)) {
-      yMin = abs(cloudFilter->points[i].y);
+    if (cloudFilter->points[i].x < xMin) {
+      xMin = cloudFilter->points[i].x;
+      y_xMin = cloudFilter->points[i].y;
     }
   }
-  // ROS_INFO("[xMin:%f,yMin:%f]", xMin, yMin);
-  sacn_velodyne_[0] = xMin;
-  sacn_velodyne_[1] = yMin;
+  // ROS_INFO("xMin:%.6f,yMin:%.6f", xMin, y_xMin);
+
+  scan_velodyne_[0] = xMin;
+  scan_velodyne_[1] = y_xMin;
 
   sensor_msgs::PointCloud2 filterCloudMsg;
   pcl::toROSMsg(*cloudFilter, filterCloudMsg);
@@ -174,7 +148,16 @@ void MyBotDrive::updatecommandVelocity(double linear, double angular) {
  * @return:
  */
 bool MyBotDrive::controlLoop() {
-  static uint8_t bot_state_num = 0;
+  if (scan_velodyne_[0] <= escape_range_ && scan_velodyne_[1] < 0) {
+    ROS_INFO("[x:%.6f,y:%.6f] Left", scan_velodyne_[0], scan_velodyne_[1]);
+    updatecommandVelocity(LINEAR_VELOCITY, ANGULAR_VELOCITY);
+  } else if (scan_velodyne_[0] <= escape_range_ && scan_velodyne_[1] > 0) {
+    ROS_INFO("[x:%.6f,y:%.6f] Right", scan_velodyne_[0], scan_velodyne_[1]);
+    updatecommandVelocity(LINEAR_VELOCITY, -ANGULAR_VELOCITY);
+  } else {
+    ROS_INFO("[x:%.6f,y:%.6f] Forward", scan_velodyne_[0], scan_velodyne_[1]);
+    updatecommandVelocity(LINEAR_VELOCITY, 0.0);
+  }
 
   return true;
 }

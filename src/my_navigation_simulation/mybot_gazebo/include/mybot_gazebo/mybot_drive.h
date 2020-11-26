@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-01 23:03:30
- * @LastEditTime: 2020-11-26 11:10:24
+ * @LastEditTime: 2020-11-26 15:02:58
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -67,7 +67,9 @@ class MyBotDrive {
 
   double bot_pose_;
   double prev_bot_pose_;
-  double sacn_velodyne_[2] = {0.0, 0.0};
+
+  /**x,y*/
+  double scan_velodyne_[2] = {0.0, 0.0};
 
   void updatecommandVelocity(double linear, double angular);
   void velodyneMsgCallBack(const sensor_msgs::PointCloud2ConstPtr& msgPtr);
