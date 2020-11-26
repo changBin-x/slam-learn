@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-26 17:36:55
+ * @LastEditTime: 2020-11-26 17:43:45
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -48,4 +48,4 @@ roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_
 ## 存在的问题
 
 1. 只能实现简单的左右转避障；
-2. 当小车-x和x方向上同时有障碍物时，转向会失灵，避障失败；
+2. 当`xMin<escape_range_`且小车-y和y方向上同时有障碍物时，转向会失灵，避障失败；
