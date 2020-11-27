@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-27 08:47:42
+ * @LastEditTime: 2020-11-27 10:53:14
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -18,9 +18,9 @@
 
 通过发布/cmd_vel话题，然后odom订阅，实时改变小车的速度和方向
 
-# 3. 简单避障
+# 3. 简单避障实现
 
-## 步骤
+## 3.1 步骤
 
 1. 获取雷达数据
    1. 订阅/velodyne_points话题，获取sensor_msgs::PointCloud2ConstPtr数据
@@ -32,7 +32,7 @@
 <img src=images/obstacle_avoidance.svg>
 </div>
 
-## 原理
+## 3.2 原理
 
 * 首先剪除点云：小车底盘box的大小为[0.140 0.140 0.143],单位(cm)，运用PCL的直通滤波器保留x方向上[0.140, 3.0]范围内的点云，y方向上[-3.0, 3.0]范围内的点云，也即只保留小车前方的点云；
 * 然后查找扫描到的x方向点云值的最小值xMin，记录xMin及对应的y_xMin；
@@ -49,7 +49,91 @@ roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_
 <img src="images/obstacle_avoidance.gif">
 </div>
 
-## 存在的问题
+## 3.3 存在的问题
 
 1. 只能实现简单的左右转避障；
 2. 当`xMin<escape_range_`且小车-y和y方向上同时有障碍物时，转向会失灵，避障失败；
+
+# 4. 三种类型的sensor_msgs
+
+# 4.1 sensor_msgs/[LaserScan Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html)
+
+原始数据定义:
+
+```
+# 从平面(二维)激光测距仪(激光雷达)进行单次扫描存储的消息
+#
+# 如果您拥有另一台行为不同的设备 (e.g. 声呐
+# 数据), 请查找或创建不同的消息, 因为该消息
+# 只适用于特定的激光数据类型
+
+[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header            # 标题中的时间戳是雷达获得第一束激光的时间
+                         # 
+                         #
+                         # 在每一个帧号为id的数据帧中, 角度是绕z轴正向测量的 
+                         # (z轴向上，角度为逆时针)，
+                         # 沿x轴正向角度为0——右手螺旋
+                         
+float32 angle_min        # 开始扫描的角度 [rad]
+float32 angle_max        # 结束扫描的角度 [rad]
+float32 angle_increment  # 测量之间的角度增量 [rad]
+
+float32 time_increment   # 相邻两次测量之间的时间 [seconds] - 如果雷达在移动
+                         #  时间被用于3d点之间的插值得到的位置
+                         
+float32 scan_time        # 相邻两次扫描的时间 [seconds]
+
+float32 range_min        # 测量范围最小值 [m]
+float32 range_max        # 测量范围最大值 [m]
+
+float32[] ranges         # 测量值 [m] (注意: values < range_min 或者 > range_max 被丢弃)
+float32[] intensities    # 强度数据 [单位视设备而定].  
+                         # 如果设备未提供强度值, 该数组置空
+```
+
+## 4.2 sensor_msgs/[PointCloud Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/PointCloud.html)
+
+原始数据定义
+
+```
+# 此消息包含3d点的集合, 加上可选的每个点的附加信息
+
+# 传感器数据获取时间，坐标帧ID。
+[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header
+
+# 3d点数组。每个Point32应该解释为在给定头部帧中的3d点
+[geometry_msgs/Point32[]](http://docs.ros.org/en/api/geometry_msgs/html/msg/Point32.html) points
+
+# 每个通道应具有相同数量的元素作为点阵列，
+# 每个通道中的数据应与每个点一一对应。
+# ChannelFloat32.msg中列出了常用的频道名称。
+[ChannelFloat32](http://docs.ros.org/en/api/sensor_msgs/html/msg/ChannelFloat32.html)[] channels
+```
+
+## 4.3 sensor_msgs/[PointCloud2 Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/PointCloud2.html)
+
+原始消息定义
+
+```
+# 此消息包含N维点的集合,消息中可能包含其他信息，例如法线，强度等
+# 点数据存储为二进制块，点数据形式为“字段”数组
+
+# 点云数据可以组织为2d（类似于图像）或1d(无序的)
+# 2d形式的点云可能由深度相机传感器，如单目相机或飞行时间相机
+
+# 传感器数据采集时间，坐标帧ID(对于3d点而言)
+[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header
+
+# 点云的2D结构。如果点云无序，那么高为1，宽为点云的长度(1维数据)
+uint32 height
+uint32 width
+
+#在二进制数据块中描述通道及其布局
+[PointField[]](http://docs.ros.org/en/api/sensor_msgs/html/msg/PointField.html) fields
+
+bool    is_bigendian # 这是大端的数据吗？
+uint32  point_step   # 点的长度（以字节为单位）
+uint32  row_step     # 行的长度（以字节为单位）
+uint8[] data         # 实际点数据，大小为（row_step*height）
+bool is_dense        # 如果没有无效点，则为True
+```
