@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-26 17:43:45
+ * @LastEditTime: 2020-11-27 08:47:42
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -27,6 +27,10 @@
    2. 把sensor_msgs::PointCloud2ConstPtr转换为pcl::PointCloud<pcl::PointXYZ>
 2. 剪除部分点云
 3. 根据保留的点云的x，y数据判断小车的行驶方向
+
+<div align="center">
+<img src=images/obstacle_avoidance.svg>
+</div>
 
 ## 原理
 
