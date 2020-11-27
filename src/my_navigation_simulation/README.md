@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-27 10:53:14
+ * @LastEditTime: 2020-11-27 11:00:58
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -60,14 +60,14 @@ roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_
 
 原始数据定义:
 
-```
+```python
 # 从平面(二维)激光测距仪(激光雷达)进行单次扫描存储的消息
 #
 # 如果您拥有另一台行为不同的设备 (e.g. 声呐
 # 数据), 请查找或创建不同的消息, 因为该消息
 # 只适用于特定的激光数据类型
 
-[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header            # 标题中的时间戳是雷达获得第一束激光的时间
+Header header            # 标题中的时间戳是雷达获得第一束激光的时间
                          # 
                          #
                          # 在每一个帧号为id的数据帧中, 角度是绕z轴正向测量的 
@@ -95,11 +95,11 @@ float32[] intensities    # 强度数据 [单位视设备而定].
 
 原始数据定义
 
-```
+```python
 # 此消息包含3d点的集合, 加上可选的每个点的附加信息
 
 # 传感器数据获取时间，坐标帧ID。
-[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header
+Header header
 
 # 3d点数组。每个Point32应该解释为在给定头部帧中的3d点
 [geometry_msgs/Point32[]](http://docs.ros.org/en/api/geometry_msgs/html/msg/Point32.html) points
@@ -107,14 +107,14 @@ float32[] intensities    # 强度数据 [单位视设备而定].
 # 每个通道应具有相同数量的元素作为点阵列，
 # 每个通道中的数据应与每个点一一对应。
 # ChannelFloat32.msg中列出了常用的频道名称。
-[ChannelFloat32](http://docs.ros.org/en/api/sensor_msgs/html/msg/ChannelFloat32.html)[] channels
+ChannelFloat32[] channels
 ```
 
 ## 4.3 sensor_msgs/[PointCloud2 Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/PointCloud2.html)
 
 原始消息定义
 
-```
+```python
 # 此消息包含N维点的集合,消息中可能包含其他信息，例如法线，强度等
 # 点数据存储为二进制块，点数据形式为“字段”数组
 
@@ -122,14 +122,14 @@ float32[] intensities    # 强度数据 [单位视设备而定].
 # 2d形式的点云可能由深度相机传感器，如单目相机或飞行时间相机
 
 # 传感器数据采集时间，坐标帧ID(对于3d点而言)
-[Header](http://docs.ros.org/en/api/std_msgs/html/msg/Header.html) header
+Header header
 
 # 点云的2D结构。如果点云无序，那么高为1，宽为点云的长度(1维数据)
 uint32 height
 uint32 width
 
 #在二进制数据块中描述通道及其布局
-[PointField[]](http://docs.ros.org/en/api/sensor_msgs/html/msg/PointField.html) fields
+PointField[] fields
 
 bool    is_bigendian # 这是大端的数据吗？
 uint32  point_step   # 点的长度（以字节为单位）
