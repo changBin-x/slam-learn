@@ -102,7 +102,7 @@ float32[] intensities    # 强度数据 [单位视设备而定].
 Header header
 
 # 3d点数组。每个Point32应该解释为在给定头部帧中的3d点
-[geometry_msgs/Point32[]](http://docs.ros.org/en/api/geometry_msgs/html/msg/Point32.html) points
+geometry_msgs/Point32[] points
 
 # 每个通道应具有相同数量的元素作为点阵列，
 # 每个通道中的数据应与每个点一一对应。
