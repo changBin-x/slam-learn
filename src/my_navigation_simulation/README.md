@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-27 11:00:58
+ * @LastEditTime: 2020-11-27 11:17:56
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -125,6 +125,8 @@ ChannelFloat32[] channels
 Header header
 
 # 点云的2D结构。如果点云无序，那么高为1，宽为点云的长度(1维数据)
+# 一般使用tof或者结构光原理的深度相机获取的点云是有序点云
+# 无序点云一般是激光雷达其他设备获取的
 uint32 height
 uint32 width
 
