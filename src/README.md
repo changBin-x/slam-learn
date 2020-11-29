@@ -4,6 +4,4 @@
 
 ## [pcl自学教程](my_pcl_tutorial/)
 
-## ROS雷达小车的仿真
-
-[my_navigation_simulation](src/my_navigation_simulation/README.md)
+## [ROS雷达小车的仿真](src/my_navigation_simulation/README.md)
