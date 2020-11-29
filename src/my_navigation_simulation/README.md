@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-29 17:41:13
+ * @LastEditTime: 2020-11-29 20:20:56
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -58,7 +58,7 @@ roslaunch mybot_gazebo [obstacle_avoidance.launch](mybot_gazebo/launch/obstacle_
 
 # 4. 三种类型的sensor_msgs
 
-# 4.1 sensor_msgs/[LaserScan Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html)
+## 4.1 sensor_msgs/[LaserScan Message](http://docs.ros.org/en/api/sensor_msgs/html/msg/LaserScan.html)
 
 原始数据定义:
 
@@ -150,4 +150,4 @@ mybot的假节点包。有了这个软件包，不需要机器人就可以完成
 
 ## 5.1 主要知识点
 
-* [两轮差速移动机器人运动分析、建模和控制](https://blog.csdn.net/iProphet/article/details/83661753?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param)
+* [两轮差速移动机器人运动分析、建模和控制](mybot_fake/README.md)
