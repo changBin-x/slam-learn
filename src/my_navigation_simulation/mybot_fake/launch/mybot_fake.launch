@@ -1,0 +1,21 @@
+<launch>
+  <!-- <arg name="model" default="$(env MYBOT_MODEL)" doc="model type [burger, waffle, waffle_pi]"/> -->
+  <arg name="model" value="waffle"/>
+  <arg name="gpu" default="true"/>
+  <arg name="gui" default="true" />
+
+  <param name="mybot_model" value="$(arg model)"/>
+  <param name="use_gui" value="$(arg gui)"/>
+
+  <!-- Spawn the example robot -->
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find mybot_description)/urdf/mybot_$(arg model).urdf.xacro' gpu:=$(arg gpu)" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+  <!-- <node pkg="mybot_fake" type="mybot_fake_node" name="mybot_fake_node" output="screen" /> -->
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find mybot_fake)/rviz/mybot_fake.rviz"/>
+</launch>

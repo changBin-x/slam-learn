@@ -1,6 +1,6 @@
 <!--
  * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-11-27 11:17:56
+ * @LastEditTime: 2020-11-29 17:41:13
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -14,11 +14,13 @@
 
 仿真场景自建
 
+建立完成的模型见[mybot_description](mybot_description/),有两种小车模型，[一种](mybot_description/urdf/mybot_burger.urdf.xacro)底盘更高，[一种](mybot_description/urdf/mybot_waffle.urdf.xacro)底盘更宽但是更低且加装有velodyne+RGBD摄像机，仿真时常用第二种
+
 # 2.如何驱动小车
 
 通过发布/cmd_vel话题，然后odom订阅，实时改变小车的速度和方向
 
-# 3. 简单避障实现
+# 3. [简单避障实现](mybot_gazebo/)
 
 ## 3.1 步骤
 
@@ -139,3 +141,13 @@ uint32  row_step     # 行的长度（以字节为单位）
 uint8[] data         # 实际点数据，大小为（row_step*height）
 bool is_dense        # 如果没有无效点，则为True
 ```
+
+# 5. ROS小车的rviz仿真包[mybot_fake](mybot_fake/README.md)
+
+mybot的假节点包。有了这个软件包，不需要机器人就可以完成简单的测试。
+
+可以在没有真正的机器人的情况下在rviz上使用这个包进行简单的测试。
+
+## 5.1 主要知识点
+
+* [两轮差速移动机器人运动分析、建模和控制](https://blog.csdn.net/iProphet/article/details/83661753?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-3.channel_param)
