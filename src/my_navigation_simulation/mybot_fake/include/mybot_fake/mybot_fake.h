@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-29 11:07:24
- * @LastEditTime: 2020-11-29 17:28:44
+ * @LastEditTime: 2020-11-30 14:12:05
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -90,9 +90,9 @@ class MybotFake {
   double last_position_[2];
   double last_velocity_[2];
 
-  double wheel_seperation_;
-  double turning_radius_;
-  double robot_radius_;
+  double wheel_seperation_;  //轮距
+  double turning_radius_;    //转动半径
+  double robot_radius_;      //小车运动的旋转半径
 
   // Function prototypes
   void commandVelocityCallback(const geometry_msgs::TwistConstPtr cmd_vel_msg);

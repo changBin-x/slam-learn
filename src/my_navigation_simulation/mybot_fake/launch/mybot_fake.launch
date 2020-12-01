@@ -11,7 +11,7 @@
   <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find mybot_description)/urdf/mybot_$(arg model).urdf.xacro' gpu:=$(arg gpu)" />
   <param name="robot_description" command="$(arg urdf_file)" />
 
-  <!-- <node pkg="mybot_fake" type="mybot_fake_node" name="mybot_fake_node" output="screen" /> -->
+  <node pkg="mybot_fake" type="mybot_fake_node" name="mybot_fake_node" output="screen" />
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" output="screen">
     <param name="publish_frequency" type="double" value="50.0" />
