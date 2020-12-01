@@ -13,7 +13,9 @@
                 "/home/chang/catkin_ws/src/my_navigation_simulation/mybot_gazebo/include/**",
                 "/home/chang/catkin_ws/src/my_navigation_simulation/robot_state_publisher/include/**",
                 "/home/chang/catkin_ws/src/velodyne_simulator/velodyne_gazebo_plugins/include/**",
-                "/usr/include/**"
+                "/usr/include/**",
+                "${workspaceFolder}/devel/include",
+                "${workspaceFolder}/src/my_navigation_simulation/mybot_fake/include"
             ],
             "name": "ROS",
             "compilerPath": "/usr/bin/gcc"
