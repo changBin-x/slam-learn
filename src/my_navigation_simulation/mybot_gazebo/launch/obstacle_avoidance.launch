@@ -6,7 +6,7 @@
     <arg name="headless" default="false"/>
     <arg name="debug" default="false"/>
     <arg name="verbose" default="false"/>
-    <arg name="world_name" default="$(find mybot_gazebo)/worlds/obstacle_avoidance.world"/>
+    <arg name="world_name" default="$(find mybot_gazebo)/worlds/mybot_square.world"/>
     <arg name="botName" default="mybot"/>
     <arg name="cmd_vel" default="/cmd_vel"/>
     <param name="cmd_vel_topicName" value="$(arg cmd_vel)"/>
