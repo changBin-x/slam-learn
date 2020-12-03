@@ -1,6 +1,6 @@
 /*
  * @Date: 2020-11-01 23:03:30
- * @LastEditTime: 2020-11-26 15:02:58
+ * @LastEditTime: 2020-12-03 13:54:09
  * @Author:  Chang_Bin
  * @LastEditors: Chang_Bin
  * @Email: bin_chang@qq.com
@@ -25,7 +25,6 @@
 #include "pcl/filters/conditional_removal.h"
 #include "pcl/filters/passthrough.h"
 #include "pcl/filters/radius_outlier_removal.h"
-#include "pcl/point_types.h"
 #include "sensor_msgs/PointCloud2.h"
 
 const double DEG2RAD = M_PI / 180.0;
