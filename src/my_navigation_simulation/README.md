@@ -1,11 +1,3 @@
-<!--
- * @Date: 2020-11-02 13:32:05
- * @LastEditTime: 2020-12-01 11:37:40
- * @Author:  Chang_Bin
- * @LastEditors: Chang_Bin
- * @Email: bin_chang@qq.com
- * @Description: 
--->
 # 1.如何建立自己的模型
 
 采用turtleBot3底盘+velodyne HDL32E雷达
@@ -120,6 +112,8 @@ mybot的假节点包。有了这个软件包，不需要机器人就可以完成
 
 可以在没有真正的机器人的情况下在rviz上使用这个包进行简单的测试。
 
-## 5.1 主要知识点
+ [两轮差速移动机器人运动分析、建模和控制](mybot_fake/README.md)
 
-* [两轮差速移动机器人运动分析、建模和控制](mybot_fake/README.md)
+# 6. [TF与URDF](mybot_fake/README.md)
+
+学习TF消息和TF树

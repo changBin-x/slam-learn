@@ -12,6 +12,11 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   message_generation
+  geometry_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  turtlesim
 )
 
 ## System dependencies are found with CMake's conventions
@@ -104,7 +109,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES beginner_tutorials
- CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime geometry_msgs tf2 tf2_ros
 #  DEPENDS system_lib
 )
 
@@ -144,8 +149,6 @@ add_dependencies(talker beginner_tutorials_generate_messages_cpp)
 add_dependencies(listener beginner_tutorials_generate_messages_cpp)
 add_dependencies(addTwoIntsServer beginner_tutorials_gencpp)
 add_dependencies(addTwoIntsClient beginner_tutorials_gencpp)
-message("项目名:" ${${PROJECT_NAME}_EXPORTED_TARGETS})
-message("catkin扩展目标:" ${catkin_EXPORTED_TARGETS})
 add_dependencies(personPublisher ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(personSubscriber ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
@@ -167,6 +170,41 @@ target_link_libraries(addTwoIntsClient ${catkin_LIBRARIES})
 target_link_libraries(personPublisher ${catkin_LIBRARIES})
 target_link_libraries(personSubscriber ${catkin_LIBRARIES})
 
+
+add_executable(turtle_tf2_broadcaster src/turtle_tf2_broadcaster.cc)
+if(catkin_EXPORTED_TARGETS)
+  add_dependencies(turtle_tf2_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+endif()
+target_link_libraries(turtle_tf2_broadcaster
+${catkin_LIBRARIES}
+)
+
+add_executable(turtle_tf2_listener src/turtle_tf2_listener.cc)
+if(catkin_EXPORTED_TARGETS)
+  add_dependencies(turtle_tf2_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+endif()
+target_link_libraries(turtle_tf2_listener
+${catkin_LIBRARIES}
+)
+
+add_executable(coordinate_transformation src/coordinate_transformation.cc)
+if(catkin_EXPORTED_TARGETS)
+  add_dependencies(coordinate_transformation ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+endif()
+target_link_libraries(
+  coordinate_transformation
+  ${catkin_LIBRARIES}
+)
+
+add_executable(frame_tf2_broadcaster src/frame_tf2_broadcaster.cc)
+target_link_libraries(frame_tf2_broadcaster
+ ${catkin_LIBRARIES}
+)
+
+add_executable(message_filter src/message_filter.cc)
+target_link_libraries(message_filter
+ ${catkin_LIBRARIES}
+)
 #############
 ## Install ##
 #############

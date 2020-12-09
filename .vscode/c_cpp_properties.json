@@ -15,7 +15,8 @@
                 "/home/chang/catkin_ws/src/velodyne_simulator/velodyne_gazebo_plugins/include/**",
                 "/usr/include/**",
                 "${workspaceFolder}/devel/include",
-                "${workspaceFolder}/src/my_navigation_simulation/mybot_fake/include"
+                "${workspaceFolder}/src/my_navigation_simulation/mybot_fake/include",
+                "${workspaceFolder}/src/my_navigation_simulation/mybot_example/include/**"
             ],
             "name": "ROS",
             "compilerPath": "/usr/bin/gcc"

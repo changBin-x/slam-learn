@@ -4,7 +4,7 @@
             "name": "ROS:debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/devel/lib/mybot_fake/mybot_fake_node",
+            "program": "${workspaceFolder}/devel/lib/robot_setup_tf/tf2_listener",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
@@ -20,12 +20,12 @@
             ],
             "preLaunchTask": "ROS:catkin_make"
         },
-        {
-            "name": "ROS: Launch",
-            "type": "ros",
-            "request": "launch",
-            "target": "/home/chang/catkin_ws/src/my_navigation_simulation/mybot_gazebo/launch/mybot_example.launch"
-        }
+        // {
+        //     "name": "ROS: Launch",
+        //     "type": "ros",
+        //     "request": "launch",
+        //     "target": "/home/chang/catkin_ws/src/my_navigation_simulation/mybot_gazebo/launch/mybot_example.launch"
+        // }
     ],
     // "compounds": [
     //     {

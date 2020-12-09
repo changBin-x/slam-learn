@@ -103,4 +103,184 @@
 <img src="img/diff-vel-car3.jpg">
 <img src="img/diff-vel-car4.jpg">
 <img src="img/diff-vel-car5.jpg">
+</div>
+
+
+# 3. TF与URDF
+
+## 3.1 ROS中的TF
+
+参考自[《机器人操作系统入门》讲义](https://sychaichangkun.gitbooks.io/ros-tutorial-icourse163/content/chapter8/8.1.html).
+
+坐标变换包括了$\color{red}{位置}$和$\color{red}{姿态}$两个方面的变换。ROS中的tf是一个可以让用户随时记录多个坐标系的软件包，tf保持缓存的树形结构中的坐标系之间的关系，并且允许用户在任何期望的时间点在任何两个坐标系之间转换点，矢量等。
+
+，ROS中机器人模型包含大量的部件，这些部件统称之为link,每一个link上面对应着一个frame, 即一个坐标系．link和frame概念是绑定在一起的。各个坐标系之间的关系，就要靠着tf tree来处理，tf tree维护着各个坐标系之间的联通。
 <div align="center">
+<img src=https://sychaichangkun.gitbooks.io/ros-tutorial-icourse163/content/pics/tf_tree_pr2.png/>
+</div>
+
+上图是我们常用的robot_sim_demo运行起来的tf　tree结构，
+
+每一个圆圈代表一个frame,对应着机器人上的一个link，
+
+任意的两个frame之间都必须是联通的，如果出现某一环节的断裂，就会引发error系统报错．
+
+所以完整的tf tree不能有任何断层的地方，这样我们才能查清楚任意两个frame之间的关系。
+
+每两个frame之间都有一个broadcaster,这就是为了使得两个frame之间能够正确连通，中间都会有一个Node发布消息来broadcaster，如果缺少Node来发布消息维护连通，那么这两个frame之间的连接就会断掉。
+
+broadcaster就是一个publisher,如果两个frame之间发生了相对运动，broadcaster就会发布相关消息．
+
+## 3.2 TF消息
+
+### 3.2.1 TransformStampde.msg
+
+消息TransformStampde.msg就是处理两个frame之间一小段tf的数据格式;
+
+```python
+std_mags/Header header
+        uint32 seq      #序号
+        time stamp      # 时间
+        string frame_id #frame名称
+string child_frame_id   #子frame名称
+geometry_msgs/Transform transform #子frame和frame的坐标变换
+        geometry_msgs/Vector3 translation #平移
+                float64 x
+                float64 y
+                float64 z
+        geometry_msgs/Quaternion rotation #四元数，表示旋转
+                float64 x
+                float64 y
+                flaot64 z
+                float64 w
+```
+
+### 3.2.2 TF树的数据类型
+
+* tf/tfMessage.msg，tf第一代已被“弃用”
+* tf2_msgs/TFMessage.msg,官网建议新工作直接使用tf2
+
+tf/tfMessage.msg或tf2_msgs/TFMessage标准格式规范如下:
+
+```python
+geometry_msgs/TransformStamped[] transforms
+        std_msgs/Header header
+                uint32 seq
+                time stamp
+                string frame_id
+        string child_frame_id
+        geometry_msgs/Transform transform
+                geometry_msgs/Vector3 translation
+                        float64 x
+                        float64 y
+                        float64 z
+                geometry_msgs/Quaternion rotation
+                        float64 x
+                        float64 y
+                        flaot64 z
+                        float64 w
+```
+
+## 3.3 tf in C++
+
+### 3.3.1 TF的数据类型
+
+| 名称                | 数据类型             |
+| ------------------- | -------------------- |
+| 向量                | tf::Vector3          |
+| 点                  | tf::Point            |
+| 四元数              | tf::Quaternion       |
+| 3*3矩阵（旋转矩阵） | tf::Matrix3x3        |
+| 位姿                | tf::pose             |
+| 变换                | tf::Transform        |
+| 带时间戳的以上类型  | tf::Stamped          |
+| 带时间戳的变换      | tf::StampedTransform |
+
+数据转换
+
+<div align="center">
+<img src=https://sychaichangkun.gitbooks.io/ros-tutorial-icourse163/content/pics/tf_translate.png>
+</div>
+
+数据转换[示例代码](../../beginner_tutorials/src/coordinate_transformation.cc)
+
+### 3.3.2 tf::TransformBroadcaster类
+```C++
+transformBroadcaster()
+void sendTransform(const StampedTransform &transform)
+void sendTransform(const std::vector<StampedTransform> &transforms)
+void sendTransform(const geometry_msgs::TransformStamped &transform)
+void sendTransform(const std::vector<geometry_msgs::TransformStamped> &transforms)
+```
+
+broadcaster就是一个publisher,而sendTransform的作用是来封装publish的函数;
+
+实际的使用中,在某个Node中构建tf::TransformBroadcaster类，然后调用sendTransform(),将transform发布到/tf的一段transform上，/tf里的transform为我们重载了多种不同的函数类型；
+
+示例代码: 
+
+[turtle_tf2_broadcaster.cc](../../beginner_tutorials/src/turtle_tf2_broadcaster.cc)
+
+[turtle_tf2_listener](../../beginner_tutorials/src/turtle_tf2_listener.cc)
+
+### 3.3.2 增加一个frame
+
+1. 为什么增加框架?
+
+对于许多任务，在局部框架内进行思考更容易,例如,最容易在激光扫描仪中心的框架中进行激光扫描。tf2允许您为系统中的每个**传感器、链接**等定义本地框架。 而且，tf2将处理所有引入的额外框架转换。
+
+2. 往哪里加入框架
+
+tf2建立框架的树形结构； 它不允许框架结构中存在闭环。 这意味着一个框架只有一个单亲，但可以有多个孩子。 当前，我们的tf2树包含三个框架：world，turtle1和turtle2。 两只乌龟是世界的孩子。 如果要向tf2添加新框架，则需要将三个现有框架之一作为父框架，新框架将成为子框架。
+
+<div align="center">
+<img src="img/tree.png">
+</div>
+
+1. 代码示例
+
+[frame_tf2_broadcaster.cc](../../beginner_tutorials/src/frame_tf2_broadcaster.cc)
+
+### 3.3.3 在tf2_ros::MessageFilter中使用Stamped数据类型
+
+ tf2_ros::MessageFilter将使用 Header为任何ros消息订阅并将其缓存，直到可以将其转换为目标框架为止
+
+ [代码示例](../../beginner_tutorials/src/message_filter.cc)
+
+ ## 3.4 使用TF设置机器人
+
+ ### 3.4.1 变换配置
+
+ 许多ROS软件包要求使用tf软件库发布机器人的变换树。在抽象级别上，变换树根据不同坐标系之间的平移和旋转来定义偏移量。 
+ 
+ 为了更加具体，请考虑一个简单的机器人示例，该机器人具有一个可移动的基座，并在其上方安装了一个激光器。
+ 
+  关于机器人，我们定义两个坐标系：一个对应于机器人基座的中心点，另一个对应于安装在基座顶部的激光的中心点。 让我们给它们起个简单的参考。 我们将附着在移动基座上的坐标系称为“base_link”（对于导航，将其放置在机器人的旋转中心很重要），我们将附着在激光器上的坐标系称为“base_laser”。
+
+  在这一点上，让我们假设我们有一些来自激光器的数据，其形式是到激光器中心点的距离。 换句话说，我们在“ base_laser”坐标系中有一些数据。 现在假设我们要获取这些数据并将其用于帮助移动基地避免世界上的障碍。 为了成功完成此任务，我们需要一种将已从“ base_laser”框架接收到的激光扫描转换为“ base_link”框架的方法。 本质上，我们需要定义“ base_laser”和“ base_link”坐标系之间的关系。
+
+  <div align="center">
+  <img src=img/simple_robot.png>
+  </div>
+
+  在定义这种关系时，假设我们知道激光器安装在移动基座中心点前方10厘米和上方20厘米处。这给了我们一个平移偏移量，它将“base_link”框架与“base_laser”框架关联起来。具体地说，我们知道，要从“base_link”框架到“base_laser”框架获取数据，必须应用平移（x:0.1m，y:0.0m，z:0.2m），而要从“base_laser”框架获取数据到“base_link”框架，我们必须应用相反的平移（x:-0.1m，y:0.0m，z:-0.20m）
+
+  我们可以选择自己管理这种关系，这意味着在必要时在框架之间存储和应用适当的转换，但是随着坐标框架数量的增加，这将非常麻烦。不过，幸运的是，我们不必自己做这项工作。我们将使用tf定义“base_link”和“base_laser”之间的关系，并让它为我们管理两个坐标系之间的转换。
+
+  要使用tf定义和存储“base_link”和“base_laser”框架之间的关系，我们需要将它们添加到一个转换树中。从概念上讲，变换树中的每个节点对应于一个坐标系，每个边对应于从当前节点移动到其子节点所需应用的变换。Tf使用树结构来保证只有一次遍历将任意两个坐标框架链接在一起，并假设树中的所有边都从父节点指向子节点。
+
+   <div align="center">
+  <img src=img/tf_robot.png>
+  </div>
+
+  要为我们的简单示例创建一个转换树，我们将创建两个节点，一个用于“base_link”坐标系，另一个用于“base_laser”坐标系。要在它们之间创建边，我们首先需要决定哪个节点将是父节点，哪个节点将是子节点。请记住，这种区别很重要，因为tf假设所有的转换都从父对象移动到子对象。让我们选择“base_-link”坐标系作为父坐标系，因为当其他工件/传感器被添加到机器人上时，它们通过遍历“base_-link”坐标系与“base_-laser”坐标系相关联是最有意义的。这意味着与连接“base_link”和“base_laser”的边缘相关的变换应为（x:0.1m，y:0.0m，z:0.2m）。建立了转换树后，将“base_laser”帧中接收到的激光扫描转换为“base_link”帧非常简单，只需调用tf库即可。我们的机器人可以利用这些信息来推断“base_link”框架中的激光扫描，并在周围环境中安全地规划障碍物。
+
+  代码示例:[tf_broadcaster](https://raw.githubusercontent.com/ros-planning/navigation_tutorials/indigo-devel/robot_setup_tf_tutorial/src/tf_broadcaster.cpp)
+
+## 3.5 在自己的机器人上使用机器人状态发布器
+
+  机器人状态发布者可帮助您将机器人的状态广播到tf转换库。 机器人状态发布者在内部具有机器人的运动学模型。 因此，根据机器人的关节位置，机器人状态发布者可以计算并广播机器人中每个链接的3D姿态
+
+### 3.5.1 作为ROS节点运行
+
+运行机器人状态发布者的最简单方法是作为节点。 对于普通用户，这是建议的用法。 您需要执行以下两项操作来运行机械手状态发布器
