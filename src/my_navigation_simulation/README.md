@@ -114,6 +114,6 @@ mybot的假节点包。有了这个软件包，不需要机器人就可以完成
 
  [两轮差速移动机器人运动分析、建模和控制](mybot_fake/README.md)
 
-# 6. [TF与URDF](mybot_fake/README.md)
+# 6. [TF2与URDF](mybot_fake/README.md)
 
 学习TF消息和TF树
