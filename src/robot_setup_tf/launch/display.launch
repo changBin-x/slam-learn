@@ -1,0 +1,7 @@
+<launch>
+    <param name="robot_description" command="cat $(find robot_setup_tf)/model/model.xml" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+    <node name="state_publisher" pkg="robot_setup_tf" type="state_publisher" />
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find robot_setup_tf)/model.rviz" />
+
+</launch>

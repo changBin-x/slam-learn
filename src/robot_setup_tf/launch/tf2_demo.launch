@@ -1,0 +1,4 @@
+<launch>
+    <node name="robot_tf_publisher" pkg="robot_setup_tf" type="tf2_broadcaster" respawn="false" output="screen"/>
+    <node name="robot_tf_listener" pkg="robot_setup_tf" type="tf2_listener" respawn="false" output="screen"/>
+</launch>
